@@ -18,43 +18,43 @@ using namespace std;
 #define SOCKET_MAXBUF 1024
 
 ////////////////////////////////////////////////////////////////////////////
-//»ù±¾ĞÅÏ¢¸ñÊ½£¬ÓÃÓÚ´æÈëÅÅÁĞ»º´æ¶ÓÁĞÖĞ
+//åŸºæœ¬ä¿¡æ¯æ ¼å¼ï¼Œç”¨äºå­˜å…¥æ’åˆ—ç¼“å­˜é˜Ÿåˆ—ä¸­
 struct ConnProto
 {
-	// ½øĞĞÍ¨ĞÅĞ­ÒéµÄ¶¨Òå
-	int type; // ¿Í»§»ú¶Ô·şÎñÆ÷0 ÎªµÇÂ¼£»1 Îª×¢²á£»2 ÎªÏòÖ¸¶¨µÄÓÃ»§ÁÄÌì£»3 ÎªÈºÁÄ£»4 ÎªÍË³ö
-			  // ·şÎñÆ÷¶Ô¿Í»§»ú0 ÎªµÇÂ¼³É¹¦£¬´ËÊ±srcuserid±£´æµ±Ç°ÔÚÏßÓÃ»§ÊıÄ¿£»-1Îª²Ù×÷Ê§°Ü 2 ÎªÓĞÓÃ»§ĞÅÏ¢µ½£»3 ÓĞÈºÓÃ»§ĞÅÏ¢µ½£»4 ÓĞÓÃ»§ÍË³ö
-	int srcuserid; // Ô´ÓÃ»§IDºÅ
+	// è¿›è¡Œé€šä¿¡åè®®çš„å®šä¹‰
+	int type; // å®¢æˆ·æœºå¯¹æœåŠ¡å™¨0 ä¸ºç™»å½•ï¼›1 ä¸ºæ³¨å†Œï¼›2 ä¸ºå‘æŒ‡å®šçš„ç”¨æˆ·èŠå¤©ï¼›3 ä¸ºç¾¤èŠï¼›4 ä¸ºé€€å‡º
+			  // æœåŠ¡å™¨å¯¹å®¢æˆ·æœº0 ä¸ºç™»å½•æˆåŠŸï¼Œæ­¤æ—¶srcuseridä¿å­˜å½“å‰åœ¨çº¿ç”¨æˆ·æ•°ç›®ï¼›-1ä¸ºæ“ä½œå¤±è´¥ 2 ä¸ºæœ‰ç”¨æˆ·ä¿¡æ¯åˆ°ï¼›3 æœ‰ç¾¤ç”¨æˆ·ä¿¡æ¯åˆ°ï¼›4 æœ‰ç”¨æˆ·é€€å‡º
+	int srcuserid; // æºç”¨æˆ·IDå·
 };
 
-// ÓÃÓÚ´«ËÍÁÄÌìÄÚÈİ
+// ç”¨äºä¼ é€èŠå¤©å†…å®¹
 struct ChatContent
 {
-	int  destuserid; // Ä¿±êÓÃ»§£¬Èç¹ûÑ¡ÔñµÄÊÇË½ÁÄ
-	char strContent[200]; // ÁÄÌìµÄÄÚÈİ£¬×î¶àÎª200¸ö×Ö·û	
+	int  destuserid; // ç›®æ ‡ç”¨æˆ·ï¼Œå¦‚æœé€‰æ‹©çš„æ˜¯ç§èŠ
+	char strContent[200]; // èŠå¤©çš„å†…å®¹ï¼Œæœ€å¤šä¸º200ä¸ªå­—ç¬¦	
 };
 
-// ÓÃÓÚ´«ËÍÄÚÈİĞÅÏ¢
+// ç”¨äºä¼ é€å†…å®¹ä¿¡æ¯
 struct UserContent
 {
 	char strName[20];
 	char password[10];
 };
 
-// ÓÃÓÚÄÚ²¿µÄÓÃ»§ĞÅÏ¢±íµÄ´æ´¢
+// ç”¨äºå†…éƒ¨çš„ç”¨æˆ·ä¿¡æ¯è¡¨çš„å­˜å‚¨
 struct UserNode
 {
-	// ÔÚÏßÓÃ»§ĞÅÏ¢½áµã
+	// åœ¨çº¿ç”¨æˆ·ä¿¡æ¯ç»“ç‚¹
 	int  id;
-	char strName[20]; // ĞÕÃû
-	char password[10]; // ËùÔÚµÄÃÜÂë
-	char strIP[16];   // ËùÔÚIPµØÖ·
-	int  port;  // ¶Ë¿ÚºÅ
+	char strName[20]; // å§“å
+	char password[10]; // æ‰€åœ¨çš„å¯†ç 
+	char strIP[16];   // æ‰€åœ¨IPåœ°å€
+	int  port;  // ç«¯å£å·
 	char startdate[30];
 	char enddate[30];
 };
 
-// ÓÃÓÚÄÚ²¿µÄÅÅ¶ÓĞÅÏ¢¶ÓÁĞ
+// ç”¨äºå†…éƒ¨çš„æ’é˜Ÿä¿¡æ¯é˜Ÿåˆ—
 struct PacketNode
 {
 	char infor[1024];
@@ -64,21 +64,21 @@ struct PacketNode
 };
 
 ////////////////////////////////////////////////////////////////////////////
-// ¹«¹²Êı¾İÇø¡¡ÓÃÓÚ´æ´¢¹«¹²µÄĞÅÏ¢Êı¾İ
-queue<PacketNode> g_qPacketNodes;  // ÓÃÓÚ±íÊ¾ÇëÇóµÄĞÅÏ¢¶ÓÁĞ
-queue<string>	g_pWriteNodes; // ÓÃÓÚÏòMysQLĞ´ÈëµÄ¶ÓÁĞĞÅÏ¢
+// å…¬å…±æ•°æ®åŒºã€€ç”¨äºå­˜å‚¨å…¬å…±çš„ä¿¡æ¯æ•°æ®
+queue<PacketNode> g_qPacketNodes;  // ç”¨äºè¡¨ç¤ºè¯·æ±‚çš„ä¿¡æ¯é˜Ÿåˆ—
+queue<string>	g_pWriteNodes; // ç”¨äºå‘MysQLå†™å…¥çš„é˜Ÿåˆ—ä¿¡æ¯
 
-map<int,UserNode> g_pOnLineUserMap; // ÓÃMAP²éÕÒ±íµÄĞÎÊ½±£´æµ±Ç°ÔÚÏßÓÃ»§
-map<int,UserNode> g_pDisLineUserMap; // ÓÃMAP²éÕÒ±íµÄĞÎÊ½±£´æµ±Ç°²»ÔÚÏßÓÃ»§
+map<int,UserNode> g_pOnLineUserMap; // ç”¨MAPæŸ¥æ‰¾è¡¨çš„å½¢å¼ä¿å­˜å½“å‰åœ¨çº¿ç”¨æˆ·
+map<int,UserNode> g_pDisLineUserMap; // ç”¨MAPæŸ¥æ‰¾è¡¨çš„å½¢å¼ä¿å­˜å½“å‰ä¸åœ¨çº¿ç”¨æˆ·
 
-MYSQL* m_pMyData;                  //msyql Á¬½Ó¾ä±ú
-int g_nServerSocket;               // UDPÌ×½Ó×Ö
-int g_ServerPort = 9000;                // ¶Ë¿Ú
-int g_bIsIMServer = 0;             // ÊÇ·ñ¿ªÆô²É¼¯
+MYSQL* m_pMyData;                  //msyql è¿æ¥å¥æŸ„
+int g_nServerSocket;               // UDPå¥—æ¥å­—
+int g_ServerPort = 9000;                // ç«¯å£
+int g_bIsIMServer = 0;             // æ˜¯å¦å¼€å¯é‡‡é›†
 int g_lWriteNum = 0;
 int g_lWriteFailNum = 0;
 
-char g_dbName[30];                 // Êı¾İ±íÃû
+char g_dbName[30];                 // æ•°æ®è¡¨å
 char g_tableName[30];
 char g_strIP[15];
 char g_strUser[50];
@@ -87,21 +87,21 @@ int  g_nPort = 3306;
 
 
 ////////////////////////////////////////////////////////////
-// ¹«¿ªº¯ÊıÍ·ĞÅÏ¢
+// å…¬å¼€å‡½æ•°å¤´ä¿¡æ¯
 void Help();
 
-// IM ServerµÄ¿ªÆôÓë¹Ø±Õ
+// IM Serverçš„å¼€å¯ä¸å…³é—­
 void RunIMServer();
 void StopIMServer();
 
-// ×´Ì¬²éÑ¯
+// çŠ¶æ€æŸ¥è¯¢
 void ShowStatus();
 
 void InitDB();
 void DBInfor();
 
 
-// Èı¸öÏß³Ì
+// ä¸‰ä¸ªçº¿ç¨‹
 void* WriteThread(void *threapara);
 void* IMServerThread(void *threapara);
 void* IMServerApplicationThread(void *threapara);
@@ -119,14 +119,14 @@ void OtherFunc(char *pData,PacketNode &node,int srcid);
 
 int main()
 {
-	printf("¼´Ê±ÁÄÌì·şÎñÆ÷\n");
+	printf("å³æ—¶èŠå¤©æœåŠ¡å™¨\n");
 	char strTime[100];
 	GetCurTime(strTime,0);
 	printf("%s\n",strTime);
 	InitDB();
 	while(1)
 	 {	 
-		 printf("ÇëÊäÈëÃüÁî:>");
+		 printf("è¯·è¾“å…¥å‘½ä»¤:>");
 		 char command[255];
 	     gets(command);
 	
@@ -152,7 +152,7 @@ int main()
 		 }
 		 else
 		 {
-			 printf("¶Ô²»Æğ£¬¸ÃÃüÁî²»Ê¶±ğ!!!\n");
+			 printf("å¯¹ä¸èµ·ï¼Œè¯¥å‘½ä»¤ä¸è¯†åˆ«!!!\n");
 		 }
 	 }
 	return 0;
@@ -165,66 +165,66 @@ void InitDB()
 	strcpy(g_strPass,"523667");
 	strcpy(g_tableName,"");	
 
-	// ½øĞĞÊı¾İ¿âÁ¬½Ó£¬Èç¹ûÁ¬½ÓÊ§°Ü£¬ÔòÑ¡ÔñÏµÍ³ÍË³ö
+	// è¿›è¡Œæ•°æ®åº“è¿æ¥ï¼Œå¦‚æœè¿æ¥å¤±è´¥ï¼Œåˆ™é€‰æ‹©ç³»ç»Ÿé€€å‡º
 	m_pMyData = mysql_init(NULL);
-	printf("ÕıÔÚ½øĞĞÊı¾İ¿âÁ¬½Ó................");
+	printf("æ­£åœ¨è¿›è¡Œæ•°æ®åº“è¿æ¥................");
 	if(mysql_real_connect(m_pMyData,g_strIP,g_strUser,g_strPass,g_dbName,g_nPort,NULL,0))
 	{
-		printf("[OK]\nÕıÔÚ²éÕÒÖ¸¶¨µÄÊı¾İ¿â................");
-		if ( mysql_select_db( m_pMyData, g_dbName) < 0 ) //Ñ¡ÔñÖÆ¶¨µÄÊı¾İ¿âÊ§°Ü
+		printf("[OK]\næ­£åœ¨æŸ¥æ‰¾æŒ‡å®šçš„æ•°æ®åº“................");
+		if ( mysql_select_db( m_pMyData, g_dbName) < 0 ) //é€‰æ‹©åˆ¶å®šçš„æ•°æ®åº“å¤±è´¥
 		{
-			mysql_close( m_pMyData ) ;//³õÊ¼»¯mysql½á¹¹Ê§°Ü	
-			printf("[FAILED]\nÊı¾İ¿â²éÕÒÊ§°Ü£¬Ó¦ÓÃ³ÌĞòÍË³ö........\n");
+			mysql_close( m_pMyData ) ;//åˆå§‹åŒ–mysqlç»“æ„å¤±è´¥	
+			printf("[FAILED]\næ•°æ®åº“æŸ¥æ‰¾å¤±è´¥ï¼Œåº”ç”¨ç¨‹åºé€€å‡º........\n");
 			DBInfor();
 			exit(0);
 					
 		}
 		else
 		{
-			printf("[OK]\nÒÑÁ¬µ½ÉÏÊı¾İ¿â...\n");
+			printf("[OK]\nå·²è¿åˆ°ä¸Šæ•°æ®åº“...\n");
 		}
 	}
 	else 
     {  
-		mysql_close( m_pMyData ) ;//³õÊ¼»¯mysql½á¹¹Ê§°Ü	
-		printf("[FAILED]\nÊı¾İ¿âÁ¬½ÓÊ§°Ü£¬Ó¦ÓÃ³ÌĞòÍË³ö........\n");
+		mysql_close( m_pMyData ) ;//åˆå§‹åŒ–mysqlç»“æ„å¤±è´¥	
+		printf("[FAILED]\næ•°æ®åº“è¿æ¥å¤±è´¥ï¼Œåº”ç”¨ç¨‹åºé€€å‡º........\n");
 		DBInfor();
 		exit(0);
     }
-	// ÓÃÓÚ
+	// ç”¨äº
 	InitUserList();
 }
 void DBInfor()
 {
-	printf("---------Êı¾İ¿âÅäÖÃĞÅÏ¢----------------\n");
-	printf("%-12s %-12s\n","ÓÃ»§Ãû",g_strUser);
-	printf("%-12s %-12s\n","ÃÜÂë",g_strPass);
+	printf("---------æ•°æ®åº“é…ç½®ä¿¡æ¯----------------\n");
+	printf("%-12s %-12s\n","ç”¨æˆ·å",g_strUser);
+	printf("%-12s %-12s\n","å¯†ç ",g_strPass);
 	printf("%-12s %-12s\n","IP",g_strIP);
 	printf("%-12s %-12d\n","Port",g_nPort);
-	printf("%-12s %-12s\n","Êı¾İ¿âÃû",g_dbName);
-	printf("%-12s %-12s\n","±íÃû",g_tableName);
+	printf("%-12s %-12s\n","æ•°æ®åº“å",g_dbName);
+	printf("%-12s %-12s\n","è¡¨å",g_tableName);
 }
 void Help()
 {
 	printf("==================================================================\n");
-	printf("IMServer version£ºV1.0\n");
-	printf("author£ºmy2005lb\n\n\n");
-	printf("%-12s %-12s\n","run im server","¿ªÆôÁÄÌì·şÎñ");
-	printf("%-12s %-12s\n","stop im server","¹Ø±ÕÁÄÌì·şÎñ");
-	printf("%-12s %-12s\n","status","×´Ì¬²éÑ¯");
-	printf("%-12s %-12s\n","exit","ÍË³ö");
+	printf("IMServer versionï¼šV1.0\n");
+	printf("authorï¼šmy2005lb\n\n\n");
+	printf("%-12s %-12s\n","run im server","å¼€å¯èŠå¤©æœåŠ¡");
+	printf("%-12s %-12s\n","stop im server","å…³é—­èŠå¤©æœåŠ¡");
+	printf("%-12s %-12s\n","status","çŠ¶æ€æŸ¥è¯¢");
+	printf("%-12s %-12s\n","exit","é€€å‡º");
 	printf("==================================================================\n");
 }
-// ²É¼¯µÄ¿ªÆôÓë¹Ø±Õ
+// é‡‡é›†çš„å¼€å¯ä¸å…³é—­
 void RunIMServer()
 {
 	if(g_bIsIMServer)
 	{
-		printf("µ±Ç°µÄÁÄÌì·şÎñÒÑ´¦ÓÚ¿ªÆô×´Ì¬....\n");
+		printf("å½“å‰çš„èŠå¤©æœåŠ¡å·²å¤„äºå¼€å¯çŠ¶æ€....\n");
 	}
 	else
 	{
-		// Æô¶¯Èı¸öÏß³Ì¡¡·Ö±ğÊÇÊı¾İ½ÓÊÕÏß³Ì¡¢ÁÄÌì·şÎñÏß³Ì¡¢Êı¾İ¿âĞ´ÈëÏß³Ì¡¡
+		// å¯åŠ¨ä¸‰ä¸ªçº¿ç¨‹ã€€åˆ†åˆ«æ˜¯æ•°æ®æ¥æ”¶çº¿ç¨‹ã€èŠå¤©æœåŠ¡çº¿ç¨‹ã€æ•°æ®åº“å†™å…¥çº¿ç¨‹ã€€
 		g_bIsIMServer = 1;
 		pthread_t threadid;
 		pthread_create(&threadid, NULL, IMServerThread, NULL);     
@@ -232,7 +232,7 @@ void RunIMServer()
 		pthread_create(&threadid1, NULL, IMServerApplicationThread, NULL);  
 		pthread_t threadid2;
 		pthread_create(&threadid2, NULL, WriteThread, NULL);  
-		printf("ÁÄÌì·şÎñÒÑ¿ªÆô....\n");
+		printf("èŠå¤©æœåŠ¡å·²å¼€å¯....\n");
 	}
 }
 void StopIMServer()
@@ -240,30 +240,30 @@ void StopIMServer()
 	if(g_bIsIMServer)
 	{
 		g_bIsIMServer = 0;		
-		printf("ÁÄÌì·şÎñÒÑ¹Ø±Õ....\n");
+		printf("èŠå¤©æœåŠ¡å·²å…³é—­....\n");
 	}
 	else
 	{
-		printf("µ±Ç°ÁÄÌì·şÎñÒÑ´¦ÓÚ¹Ø±Õ×´Ì¬....\n");
+		printf("å½“å‰èŠå¤©æœåŠ¡å·²å¤„äºå…³é—­çŠ¶æ€....\n");
 	}
 }
-// ×´Ì¬²éÑ¯
+// çŠ¶æ€æŸ¥è¯¢
 void ShowStatus()
 {
-	printf("==========µ±Ç°µÄ×´Ì¬²éÑ¯==============\n");
-	printf("ÏµÍ³µ±Ç°´¦ÓÚ:[%s]\n",g_bIsIMServer>0?"Æô¶¯":"¹Ø±Õ");
-	printf("\n==========ÓÃ»§ĞÅÏ¢×´Ì¬==============\n");
-	printf("µ±Ç°ÔÚÏßÓÃ»§¸öÊı:[%d]\n",g_pOnLineUserMap.size());
-	printf("µ±Ç°ÀëÏßÓÃ»§¸öÊı:[%d]\n",g_pDisLineUserMap.size());
-	printf("µ±Ç°ÇëÇó¶ÓÁĞµÄ¸öÊı:[%d]\n",g_qPacketNodes.size());
-	printf("\n==========Êı¾İ´æ´¢×´Ì¬²éÑ¯==============\n");
-	printf("µ±Ç°´ıĞ´ÈëµÄÊı¾İÇëÇó¸öÊı:[%d]\n",g_pWriteNodes.size());
-	printf("³É¹¦Ğ´ÈëµÄ¸öÊı:[%d]\n",g_lWriteNum);
-	printf("Ğ´ÈëÊ§°ÜµÄ¸öÊı:[%d]\n",g_lWriteFailNum);
+	printf("==========å½“å‰çš„çŠ¶æ€æŸ¥è¯¢==============\n");
+	printf("ç³»ç»Ÿå½“å‰å¤„äº:[%s]\n",g_bIsIMServer>0?"å¯åŠ¨":"å…³é—­");
+	printf("\n==========ç”¨æˆ·ä¿¡æ¯çŠ¶æ€==============\n");
+	printf("å½“å‰åœ¨çº¿ç”¨æˆ·ä¸ªæ•°:[%d]\n",g_pOnLineUserMap.size());
+	printf("å½“å‰ç¦»çº¿ç”¨æˆ·ä¸ªæ•°:[%d]\n",g_pDisLineUserMap.size());
+	printf("å½“å‰è¯·æ±‚é˜Ÿåˆ—çš„ä¸ªæ•°:[%d]\n",g_qPacketNodes.size());
+	printf("\n==========æ•°æ®å­˜å‚¨çŠ¶æ€æŸ¥è¯¢==============\n");
+	printf("å½“å‰å¾…å†™å…¥çš„æ•°æ®è¯·æ±‚ä¸ªæ•°:[%d]\n",g_pWriteNodes.size());
+	printf("æˆåŠŸå†™å…¥çš„ä¸ªæ•°:[%d]\n",g_lWriteNum);
+	printf("å†™å…¥å¤±è´¥çš„ä¸ªæ•°:[%d]\n",g_lWriteFailNum);
 }
 void* IMServerThread(void *threapara)
 {
-	// ÓÃÓÚ³õÊ¼»¯UDPÌ×½Ó×Ö
+	// ç”¨äºåˆå§‹åŒ–UDPå¥—æ¥å­—
 	int recvlen;
 	struct sockaddr_in ser_addr;
 	struct sockaddr_in remote_addr;
@@ -279,7 +279,7 @@ void* IMServerThread(void *threapara)
 		return NULL;
 	}
 	socklen_t len = sizeof(remote_addr);
-	// ÅĞ¶ÏÊÇ·ñ´¦ÓÚ·şÎñ×´Ì¬£¬Èô´¦ÓÚ·şÎñ×´Ì¬£¬Ôò¼ÓÈë·şÎñ¶ÓÁĞ
+	// åˆ¤æ–­æ˜¯å¦å¤„äºæœåŠ¡çŠ¶æ€ï¼Œè‹¥å¤„äºæœåŠ¡çŠ¶æ€ï¼Œåˆ™åŠ å…¥æœåŠ¡é˜Ÿåˆ—
 	while (g_bIsIMServer) {
 		//cout << "config Server State is runing...." << endl;
 		PacketNode node;
@@ -291,7 +291,7 @@ void* IMServerThread(void *threapara)
 			node.port = ntohs(remote_addr.sin_port);
 			GetCurTime(node.date,1);
 
-			printf("ĞÅÏ¢£º½ÓÊÕ³¤¶È:[%d] Êµ¼Ê³¤¶È:[%d] IPµØÖ·:[%s] ¶Ë¿ÚºÅ:[%d] [%d] [%d]\n",recvlen,strlen(node.infor),node.strIP,node.port,htons(remote_addr.sin_port),remote_addr.sin_port);
+			printf("ä¿¡æ¯ï¼šæ¥æ”¶é•¿åº¦:[%d] å®é™…é•¿åº¦:[%d] IPåœ°å€:[%s] ç«¯å£å·:[%d] [%d] [%d]\n",recvlen,strlen(node.infor),node.strIP,node.port,htons(remote_addr.sin_port),remote_addr.sin_port);
 			g_qPacketNodes.push(node);
 		}	
 	}
@@ -302,7 +302,7 @@ void* IMServerApplicationThread(void *threapara)
 	while (g_bIsIMServer) {
 		if(g_qPacketNodes.size() <= 0)
 		{
-			// Èç¹ûµ±Ç°µÄ¶ÓÁĞ³¤¶ÈÎª0£¬ÔòË¯Ãß
+			// å¦‚æœå½“å‰çš„é˜Ÿåˆ—é•¿åº¦ä¸º0ï¼Œåˆ™ç¡çœ 
 			sleep(1);
 			continue;
 		}
@@ -313,7 +313,7 @@ void* IMServerApplicationThread(void *threapara)
 		ConnProto *pHeader = (ConnProto*)pData;
 		pData += sizeof(ConnProto);
 		
-		// 0 ÎªµÇÂ¼£»1 Îª×¢²á£»2 ÎªÏòÖ¸¶¨µÄÓÃ»§ÁÄÌì£»3 ÎªÈºÁÄ£»4 ÎªÍË³ö
+		// 0 ä¸ºç™»å½•ï¼›1 ä¸ºæ³¨å†Œï¼›2 ä¸ºå‘æŒ‡å®šçš„ç”¨æˆ·èŠå¤©ï¼›3 ä¸ºç¾¤èŠï¼›4 ä¸ºé€€å‡º
 		if(pHeader->type == 0)
 		{
 			LoginFunc(pData,node,pHeader->srcuserid);
@@ -336,7 +336,7 @@ void* IMServerApplicationThread(void *threapara)
 		}
 		else
 		{
-			// ²»Ê¶±ğµÄĞ­ÒéÀàĞÍ
+			// ä¸è¯†åˆ«çš„åè®®ç±»å‹
 			OtherFunc(pData,node,pHeader->srcuserid);
 		}
 	}
@@ -350,7 +350,7 @@ void* WriteThread(void *threapara)
 		{
 			string strSQL = g_pWriteNodes.front();
 			g_pWriteNodes.pop();			
-			// »ñµÃ¶ÓÍ·½áµã£¬¹¹ÔìSQLÓï¾ä£¬Ğ´ÈëÊı¾İ¿âÖĞ	
+			// è·å¾—é˜Ÿå¤´ç»“ç‚¹ï¼Œæ„é€ SQLè¯­å¥ï¼Œå†™å…¥æ•°æ®åº“ä¸­	
 			if(!mysql_real_query( m_pMyData, strSQL.c_str(),strlen(strSQL.c_str())))
 				g_lWriteNum++;
 			else
@@ -379,7 +379,7 @@ int GetCurTime(char *strTime,int type)
         return -1;
     }
 	if(type == 0)
-		sprintf(strTime,"ÏµÍ³ÔËĞĞÊ±¼äÎª: %d-%d-%d %d:%d:%d\n",tm->tm_year + 1900,tm->tm_mon + 1,tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
+		sprintf(strTime,"ç³»ç»Ÿè¿è¡Œæ—¶é—´ä¸º: %d-%d-%d %d:%d:%d\n",tm->tm_year + 1900,tm->tm_mon + 1,tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
 	else if(type == 1)
 		sprintf(strTime,"%d-%d-%d %d:%d:%d",tm->tm_year + 1900,tm->tm_mon + 1,tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
 	else if(type == 2)
@@ -387,21 +387,21 @@ int GetCurTime(char *strTime,int type)
 
     return 0;
 }
-// ÓÃÓÚ³õÊ¼»¯ÓÃ»§ĞÅÏ¢ÁĞ±í
+// ç”¨äºåˆå§‹åŒ–ç”¨æˆ·ä¿¡æ¯åˆ—è¡¨
 void InitUserList()
 {
-	MYSQL_RES * res ;//±£´æ²éÑ¯½á¹û
-	MYSQL_FIELD * fd ;//±£´æ×Ö¶Î½á¹û
+	MYSQL_RES * res ;//ä¿å­˜æŸ¥è¯¢ç»“æœ
+	MYSQL_FIELD * fd ;//ä¿å­˜å­—æ®µç»“æœ
 	MYSQL_ROW row ;
-	int num_row = 0;//µÃµ½¼ÇÂ¼ÊıÁ¿
-	int num_col = 0;//µÃµ½×Ö¶ÎÊıÁ¿
+	int num_row = 0;//å¾—åˆ°è®°å½•æ•°é‡
+	int num_col = 0;//å¾—åˆ°å­—æ®µæ•°é‡
 	const char *strSQL="select id,name,password from user_infor";
 	if(!mysql_real_query( m_pMyData, strSQL,strlen(strSQL)))
 	{
-	//	printf("Ö´ĞĞ³É¹¦£¬Ó°Ïì%dĞĞ\n",mysql_affected_rows(m_pMyData));//µÃµ½ÊÜÓ°ÏìµÄĞĞÊı
-		res  = mysql_store_result( m_pMyData ) ;//±£´æ²éÑ¯½á¹û
-		num_row = (int) mysql_num_rows( res ) ; //µÃµ½¼ÇÂ¼ÊıÁ¿
-		num_col = mysql_num_fields( res ) ;//µÃµ½×Ö¶ÎÊıÁ¿
+	//	printf("æ‰§è¡ŒæˆåŠŸï¼Œå½±å“%dè¡Œ\n",mysql_affected_rows(m_pMyData));//å¾—åˆ°å—å½±å“çš„è¡Œæ•°
+		res  = mysql_store_result( m_pMyData ) ;//ä¿å­˜æŸ¥è¯¢ç»“æœ
+		num_row = (int) mysql_num_rows( res ) ; //å¾—åˆ°è®°å½•æ•°é‡
+		num_col = mysql_num_fields( res ) ;//å¾—åˆ°å­—æ®µæ•°é‡
 		
 		for (int f1 = 0; f1 < num_row; f1++) 
 		{
@@ -416,15 +416,15 @@ void InitUserList()
 	}
 	else      
 	{
-		printf("ÏÂÔØÓÃ»§ĞÅÏ¢Ê§°Ü");
+		printf("ä¸‹è½½ç”¨æˆ·ä¿¡æ¯å¤±è´¥");
 	}
 }
-// ÓÃÓÚĞÅÏ¢µÄ·¢ËÍ
+// ç”¨äºä¿¡æ¯çš„å‘é€
 void SendInfor(int srcid,char *strinfor,int destid,int type,int count)
 {		
 	if(type == 0)
 	{
-		// Èº·¢	
+		// ç¾¤å‘	
 		map<int,UserNode>::iterator it; 
         for(it=g_pOnLineUserMap.begin(); it != g_pOnLineUserMap.end();it++)   
         {   
@@ -441,7 +441,7 @@ void SendInfor(int srcid,char *strinfor,int destid,int type,int count)
 	}
 	else
 	{
-		// Ë½ÁÄ
+		// ç§èŠ
 		map<int,UserNode>::iterator it = g_pOnLineUserMap.find(destid);
 		if(it != g_pOnLineUserMap.end())
 		{
@@ -457,23 +457,23 @@ void SendInfor(int srcid,char *strinfor,int destid,int type,int count)
 
 void LoginFunc(char *pData,PacketNode &node,int srcid)
 {
-	// Õë¶ÔÓÃ»§µÇÂ¼£¬Èç¹ûÓÃ»§µÇÂ¼³É¹¦Ôò·µ»ØÏìÓ¦Âë£¬ÒÔ¼°µ±Ç°µÄÔÚÏßÓÃ»§ÁĞ±í
+	// é’ˆå¯¹ç”¨æˆ·ç™»å½•ï¼Œå¦‚æœç”¨æˆ·ç™»å½•æˆåŠŸåˆ™è¿”å›å“åº”ç ï¼Œä»¥åŠå½“å‰çš„åœ¨çº¿ç”¨æˆ·åˆ—è¡¨
 	ConnProto retnode;
 	map<int,UserNode>::iterator p1 = g_pOnLineUserMap.find(srcid);
 	map<int,UserNode>::iterator p2 = g_pDisLineUserMap.find(srcid);
 	if(p1 != g_pOnLineUserMap.end()){
-		// µ±Ç°´æÔÚÒÑµÇÂ¼
+		// å½“å‰å­˜åœ¨å·²ç™»å½•
 		retnode.type = -1;
 	}
 	else if(p2 == g_pDisLineUserMap.end()){
-		// ²»´æÔÚ¸ÃÓÃ»§
+		// ä¸å­˜åœ¨è¯¥ç”¨æˆ·
 		retnode.type = -2;
 	}
 	else{
 		UserContent *pUser = (UserContent *)pData;
 		if(strcmp(pUser->strName,p2->second.strName) == 0 
 			&& strcmp(pUser->strName,p2->second.strName) == 0 )	{
-			// Èç¹û³É¹¦ ½«·ÇÔÚÏßÓÃ»§Ç¨ÒÆÖÁÔÚÏßÓÃ»§ÁĞ±íÖĞ
+			// å¦‚æœæˆåŠŸ å°†éåœ¨çº¿ç”¨æˆ·è¿ç§»è‡³åœ¨çº¿ç”¨æˆ·åˆ—è¡¨ä¸­
 			retnode.type = 0;
 			strcpy(p2->second.strIP,node.strIP);
 			p2->second.port = node.port;
@@ -481,7 +481,7 @@ void LoginFunc(char *pData,PacketNode &node,int srcid)
 			g_pOnLineUserMap[srcid] = p2->second;
 			g_pDisLineUserMap.erase(srcid);		
 	
-	    	// ±éÀú»ñµÃµ±Ç°µÄÃ¿Ò»¸ö½Úµã£¬¸ñÊ½»¯ÓÃ»§ÔÚÏß±í£¬·¢ËÍµ½µÇÂ¼¿Í»§¶Ë
+	    	// éå†è·å¾—å½“å‰çš„æ¯ä¸€ä¸ªèŠ‚ç‚¹ï¼Œæ ¼å¼åŒ–ç”¨æˆ·åœ¨çº¿è¡¨ï¼Œå‘é€åˆ°ç™»å½•å®¢æˆ·ç«¯
 			char strRet[2048];
 			int ncount = 0;
 			char *pstrRet = strRet;
@@ -501,9 +501,9 @@ void LoginFunc(char *pData,PacketNode &node,int srcid)
 				}
 			}
 			SendInfor(srcid,strRet,srcid,1,ncount);
-			// ÏòÈºÖÚ¹ã²¥¸ÃÓÃ»§ÉÏÏßÍ¨Öª
+			// å‘ç¾¤ä¼—å¹¿æ’­è¯¥ç”¨æˆ·ä¸Šçº¿é€šçŸ¥
 			char strnotice[100];
-			// ÓÃÓÚ¸ñÊ½»¯´ı·¢ËÍµÄµÇÂ¼ĞÅÏ¢
+			// ç”¨äºæ ¼å¼åŒ–å¾…å‘é€çš„ç™»å½•ä¿¡æ¯
 			ConnProto notice;
 			notice.srcuserid = srcid;
 			notice.type = 10;
@@ -520,7 +520,7 @@ void LoginFunc(char *pData,PacketNode &node,int srcid)
 			UserNode *pcont = (UserNode *)pStr;
 			*pcont = cont;
 			SendInfor(srcid,strnotice,0,0,sizeof(ConnProto)+sizeof(UserNode));
-			// Ğ´ÈëÈÕÖ¾¼ÇÂ¼
+			// å†™å…¥æ—¥å¿—è®°å½•
 			char log[1024];
 			sprintf(log,"insert into user_log(srcid,type,strip,port,protime) values(%d,0,'%s',%d,'%s')",
 				srcid,node.strIP,node.port,node.date);
@@ -530,12 +530,12 @@ void LoginFunc(char *pData,PacketNode &node,int srcid)
 		else
 			retnode.type = -3;
 	}
-	// ÏòµÇÂ¼µÄ·¢ÆğÕß£¬·¢ËÍÏìÓ¦Âë£¬À´ÌáÊ¾³ö´íµÄÔ­Òò 
+	// å‘ç™»å½•çš„å‘èµ·è€…ï¼Œå‘é€å“åº”ç ï¼Œæ¥æç¤ºå‡ºé”™çš„åŸå›  
 	char error[100];
 	char *perror = error;
 	ConnProto *pretnode =(ConnProto *)perror;
 	*pretnode = retnode;
-	// Èç¹ûÊ§°Ü£¬Ôò·µ»ØÊ§°ÜµÄ½á¹û
+	// å¦‚æœå¤±è´¥ï¼Œåˆ™è¿”å›å¤±è´¥çš„ç»“æœ
 	SendInfor(srcid,error,srcid,1,sizeof(ConnProto));
 	char log[1024];
 	sprintf(log,"insert into user_log(srcid,type,strip,port,protime) values(%d,%d,'%s',%d,'%s')",
@@ -551,7 +551,7 @@ void RegisterFunc(char *pData,PacketNode &node,int srcid)
 	if(p1 != g_pOnLineUserMap.end() 
 		|| p2 != g_pDisLineUserMap.end())
 	{
-		// ´æÔÚ¸ÃÓÃ»§
+		// å­˜åœ¨è¯¥ç”¨æˆ·
 		retnode.type = -11;
 	}
 	else
@@ -566,10 +566,10 @@ void RegisterFunc(char *pData,PacketNode &node,int srcid)
 		pUser.port = node.port;
 		strcpy(pUser.startdate,node.date);
 
-		// Ïò·ÇÔÚÏßÓÃ»§ÁĞ±íÖĞĞ´Èë¸Ã¼ÇÂ¼
+		// å‘éåœ¨çº¿ç”¨æˆ·åˆ—è¡¨ä¸­å†™å…¥è¯¥è®°å½•
 		g_pDisLineUserMap[srcid] = pUser;
 
-		// ¸ñÊ½»¯¼ÇÂ¼£¬Ğ´ÈëÓÃ»§ĞÅÏ¢±íÖĞ
+		// æ ¼å¼åŒ–è®°å½•ï¼Œå†™å…¥ç”¨æˆ·ä¿¡æ¯è¡¨ä¸­
 		char userinfor[1024];
 		sprintf(userinfor,"insert into user_infor(id,name,password,regtime) values(%d,'%s','%s','%s')",
 				srcid,pUser.strName,pUser.password,pUser.startdate);
@@ -580,7 +580,7 @@ void RegisterFunc(char *pData,PacketNode &node,int srcid)
 	ConnProto *pretnode =(ConnProto *)pinfor;
 	*pretnode = retnode;
 	SendInfor(srcid,infor,srcid,1,sizeof(ConnProto));
-	// ¸ñÊ½»¯¼ÇÂ¼£¬Ğ´ÈëÓÃ»§ÈÕÖ¾
+	// æ ¼å¼åŒ–è®°å½•ï¼Œå†™å…¥ç”¨æˆ·æ—¥å¿—
 	char log[1024];
 	sprintf(log,"insert into user_log(srcid,type,strip,port,protime) values(%d,%d,'%s',%d,'%s')",
 			srcid,retnode.type,node.strIP,node.port,node.date);
@@ -588,13 +588,13 @@ void RegisterFunc(char *pData,PacketNode &node,int srcid)
 }
 void PrivateChatFunc(char *pData,PacketNode &node,int srcid)
 {
-	// ½øĞĞ·¢ËÍÊı¾İµÄ¸ñÊ½»¯
+	// è¿›è¡Œå‘é€æ•°æ®çš„æ ¼å¼åŒ–
 	ChatContent *pCont = (ChatContent *)pData;
 	ConnProto *pCP = (ConnProto *)node.infor;
 	pCP->srcuserid = pCont->destuserid;
 	pCont->destuserid = srcid;
 	SendInfor(srcid,node.infor,pCP->srcuserid,1,sizeof(ConnProto)+sizeof(ChatContent));
-	// ½øĞĞÁÄÌì¼ÇÂ¼µÄ´æ´¢
+	// è¿›è¡ŒèŠå¤©è®°å½•çš„å­˜å‚¨
 	char log[2000];
 	sprintf(log,"insert into user_chat(srcid,destid,type,strip,port,centime,content) values(%d,%d,%d,'%s',%d,'%s','%s')",
 			srcid,pCP->srcuserid,pCP->type,node.strIP,node.port,node.date,pCont->strContent);
@@ -602,7 +602,7 @@ void PrivateChatFunc(char *pData,PacketNode &node,int srcid)
 }
 void PublicChatFunc(char *pData,PacketNode &node,int srcid)
 {
-	// ÀàËÆÓÚË½ÁÄ
+	// ç±»ä¼¼äºç§èŠ
 	ChatContent *pCont = (ChatContent *)pData;
 	ConnProto *pCP = (ConnProto *)node.infor;
 	pCP->srcuserid = pCont->destuserid;
@@ -620,15 +620,15 @@ void QuitFunc(char *pData,PacketNode &node,int srcid)
 	{	
 		return ;
 	}
-	// Èç¹ûÊÇµ±Ç°ÔÚÏßÓÃ»§
-	// ÓÃ»§Ç¨ÒÆ ²Ù×÷ÈÕÖ¾µÄĞ´Èë ÓÃ»§Èº·¢¹ã²¥
-	// Èç¹û³É¹¦ ½«ÔÚÏßÓÃ»§Ç¨ÒÆÖÁ·ÇÔÚÏßÓÃ»§ÁĞ±íÖĞ
+	// å¦‚æœæ˜¯å½“å‰åœ¨çº¿ç”¨æˆ·
+	// ç”¨æˆ·è¿ç§» æ“ä½œæ—¥å¿—çš„å†™å…¥ ç”¨æˆ·ç¾¤å‘å¹¿æ’­
+	// å¦‚æœæˆåŠŸ å°†åœ¨çº¿ç”¨æˆ·è¿ç§»è‡³éåœ¨çº¿ç”¨æˆ·åˆ—è¡¨ä¸­
 	g_pDisLineUserMap[srcid] = p1->second;
 	g_pOnLineUserMap.erase(srcid);		
 		
-	// ÏòÈºÖÚ¹ã²¥¸ÃÓÃ»§ÏÂÏßÍ¨Öª
+	// å‘ç¾¤ä¼—å¹¿æ’­è¯¥ç”¨æˆ·ä¸‹çº¿é€šçŸ¥
 	char strnotice[100];
-	// ÓÃÓÚ¸ñÊ½»¯´ı·¢ËÍµÄµÇÂ¼ĞÅÏ¢
+	// ç”¨äºæ ¼å¼åŒ–å¾…å‘é€çš„ç™»å½•ä¿¡æ¯
 	ConnProto notice;
 	notice.srcuserid = srcid;
 	notice.type = 4;
@@ -637,7 +637,7 @@ void QuitFunc(char *pData,PacketNode &node,int srcid)
 	*pnotice = notice;
 	SendInfor(srcid,strnotice,0,0,sizeof(ConnProto));
 
-	// Ğ´ÈëÈÕÖ¾¼ÇÂ¼
+	// å†™å…¥æ—¥å¿—è®°å½•
 	char log[1024];
 	char strdate[30];
 	GetCurTime(strdate,1);

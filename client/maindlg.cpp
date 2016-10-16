@@ -8,8 +8,8 @@ MainDlg::MainDlg(QWidget *parent) :
 {
     m_ui->setupUi(this);
     udpSocket = NULL;
-    m_nCurrentID = -1; // ±íÊ¾È«²¿µÄĞÅÏ¢
-    m_ui->m_UserList->insertItem(0,"ÈºÁÄ");
+    m_nCurrentID = -1; // è¡¨ç¤ºå…¨éƒ¨çš„ä¿¡æ¯
+    m_ui->m_UserList->insertItem(0,"ç¾¤èŠ");
     m_ui->Text_Pass->setEchoMode(QLineEdit::Password);
 }
 
@@ -35,24 +35,24 @@ void MainDlg::on_m_ButtonSend_clicked()
     if(NULL == udpSocket)
         InitUDPSocket();
 
-    // ÓĞ¹Ø·¢ËÍµÄÊÂ¼ş´¦Àí
+    // æœ‰å…³å‘é€çš„äº‹ä»¶å¤„ç†
     QString str = m_ui->m_EditInput->toPlainText();
     if(str.length() <= 0 || str.length()> 200)
     {
-        QMessageBox::information(this, "Ğ¡ÌáÊ¾",tr("·¢ËÍĞÅÏ¢Îª¿Õ»òÕß´óÓÚ200"));
+        QMessageBox::information(this, "å°æç¤º",tr("å‘é€ä¿¡æ¯ä¸ºç©ºæˆ–è€…å¤§äº200"));
         return ;
     }
-    QString strTip = tr("[ÎÒ]¶Ô[");
+    QString strTip = tr("[æˆ‘]å¯¹[");
     //m_ui->m_UserList->currentIndex()
     ConnProto conn;
     ChatContent node;
     sprintf(node.strContent,"%s",str.toAscii().data());
     if(m_nCurrentID != -1)
     {
-       // Ë½ÁÄ
+       // ç§èŠ
        conn.type=2;
        conn.srcuserid = nID;
-       // ²éÕÒ¶Ô·½µÄIDºÅ£¬Èç¹û²éÕÒ²»µ½£¬ÔòÖ±½Ó·µ»Ø
+       // æŸ¥æ‰¾å¯¹æ–¹çš„IDå·ï¼Œå¦‚æœæŸ¥æ‰¾ä¸åˆ°ï¼Œåˆ™ç›´æ¥è¿”å›
        char strname[30];
        sprintf(strname,"%s",m_ui->m_UserList->item(m_nCurrentID)->text().toAscii().data());
        int destid = -1;
@@ -62,22 +62,22 @@ void MainDlg::on_m_ButtonSend_clicked()
            if(strcmp(it->second.strName,strname) == 0)
            {
                destid = it->second.id;
-               strTip+= tr(it->second.strName)+"] Ëµ:";
+               strTip+= tr(it->second.strName)+"] è¯´:";
            }
        }
        if(destid == -1)
        {
-           m_ui->m_EditRecord->append("Error: ²éÕÒ²»µ½Ö¸¶¨µÄÓÃ»§");
+           m_ui->m_EditRecord->append("Error: æŸ¥æ‰¾ä¸åˆ°æŒ‡å®šçš„ç”¨æˆ·");
            return ;
        }
        node.destuserid = destid;
     }
     else
     {
-        // ÈºÁÄ
+        // ç¾¤èŠ
        conn.type=3;
        conn.srcuserid = nID;
-       strTip+= "´ó¼Ò] Ëµ:";
+       strTip+= "å¤§å®¶] è¯´:";
     }
     strTip+= str+"\n";
     m_ui->m_EditRecord->append(strTip);
@@ -93,7 +93,7 @@ void MainDlg::on_m_ButtonSend_clicked()
 }
 void MainDlg::SendInfor(char *strinfor,int count)
 {
-    // ÓÃÓÚ·¢ËÍÊı¾İ°ü
+    // ç”¨äºå‘é€æ•°æ®åŒ…
     QByteArray datagram;
     for(int i=0; i <count; i++)
         datagram.insert(i,strinfor[i]);
@@ -113,11 +113,11 @@ void MainDlg::receiveMessage()
         ConnProto *pConn = (ConnProto *)pData;
         pData += sizeof(ConnProto);
         QString strDate = QDateTime::currentDateTime().toString(tr("yyyy-MM-dd  hh:mm:ss"));
-        // ÒÔÏÂÊÇÕë¶Ô²»Í¬ÀàĞÍµÄÏìÓ¦ÂëµÄ´¦Àí
+        // ä»¥ä¸‹æ˜¯é’ˆå¯¹ä¸åŒç±»å‹çš„å“åº”ç çš„å¤„ç†
         if(pConn->type == 0)
         {
-            // µ±Ç°µÇÂ¼³É¹¦£¬ÏÂÔØÓÃ»§ÁĞ±í
-            QString str = "µ±Ç°ÓÃ»§ÒÑµÇÂ¼£¬ÕıÔÚÏÂÔØÓÃ»§ÁĞ±í";
+            // å½“å‰ç™»å½•æˆåŠŸï¼Œä¸‹è½½ç”¨æˆ·åˆ—è¡¨
+            QString str = "å½“å‰ç”¨æˆ·å·²ç™»å½•ï¼Œæ­£åœ¨ä¸‹è½½ç”¨æˆ·åˆ—è¡¨";
             int count = sizeof(ConnProto);
             for(int i = 0; i < pConn->srcuserid; i++)
             {
@@ -134,94 +134,94 @@ void MainDlg::receiveMessage()
         }
         else if(pConn->type == -1)
         {
-            // µ±Ç°ÓÃ»§ÒÑµÇÂ¼£¬ÏÈÀëÏß
-            QString str = "ÏµÍ³ÌáÊ¾£º[µ±Ç°ÓÃ»§ÒÑµÇÂ¼£¬ÇëÏÈÀëÏß±¾ÓÃ»§] ["+strDate+"]\n";
+            // å½“å‰ç”¨æˆ·å·²ç™»å½•ï¼Œå…ˆç¦»çº¿
+            QString str = "ç³»ç»Ÿæç¤ºï¼š[å½“å‰ç”¨æˆ·å·²ç™»å½•ï¼Œè¯·å…ˆç¦»çº¿æœ¬ç”¨æˆ·] ["+strDate+"]\n";
             this->m_ui->m_EditRecord->append(str);
         }
         else if(pConn->type == -2)
         {
-            // µ±Ç°ÓÃ»§²»´æÔÚ£¬ÏÈ×¢²á
-            QString str = "ÏµÍ³ÌáÊ¾£º[µ±Ç°ÓÃ»§²»´æÔÚ£¬ÇëÏÈ×¢²á±¾ÓÃ»§]["+strDate+"]\n";
+            // å½“å‰ç”¨æˆ·ä¸å­˜åœ¨ï¼Œå…ˆæ³¨å†Œ
+            QString str = "ç³»ç»Ÿæç¤ºï¼š[å½“å‰ç”¨æˆ·ä¸å­˜åœ¨ï¼Œè¯·å…ˆæ³¨å†Œæœ¬ç”¨æˆ·]["+strDate+"]\n";
             this->m_ui->m_EditRecord->append(str);
 
         }
         else if(pConn->type == -3)
         {
-             // µ±Ç°ÓÃ»§ÃÜÂë´íÎó
-            QString str = "ÏµÍ³ÌáÊ¾£º[ÓÃ»§Ãû»òÃÜÂë´íÎó£¬ÇëÖØĞÂÊäÈëºó£¬ÔÙµÇÂ¼]["+strDate+"]\n";
+             // å½“å‰ç”¨æˆ·å¯†ç é”™è¯¯
+            QString str = "ç³»ç»Ÿæç¤ºï¼š[ç”¨æˆ·åæˆ–å¯†ç é”™è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥åï¼Œå†ç™»å½•]["+strDate+"]\n";
             this->m_ui->m_EditRecord->append(str);
         }
         else if(pConn->type == 10)
         {
-            // ÓĞĞÂÓÃ»§µ½À´
+            // æœ‰æ–°ç”¨æˆ·åˆ°æ¥
             UserContent *pUser = (UserContent *)pData;
             UserNode node ;
             node.id = pConn->srcuserid;
             strcpy(node.strName,pUser->strName);
-            QString str = "ÏµÍ³ÌáÊ¾:»¶Ó­ĞÂÓÃ»§["+tr(node.strName)+"]µ½À´["+strDate+"]\n";
+            QString str = "ç³»ç»Ÿæç¤º:æ¬¢è¿æ–°ç”¨æˆ·["+tr(node.strName)+"]åˆ°æ¥["+strDate+"]\n";
             this->m_ui->m_EditRecord->append(str);
-            // ¼ÓÈëµ½µ±Ç°ÁĞ±íÖĞ
+            // åŠ å…¥åˆ°å½“å‰åˆ—è¡¨ä¸­
             this->m_mapuserlist[node.id] = node;
             this->m_ui->m_UserList->addItem(new QListWidgetItem(QString(node.strName)));
         }
         else if(pConn->type == 11)
         {
-            // ×¢²á³É¹¦
-            QString str = "ÏµÍ³ÌáÊ¾£º[ÓÃ»§ÒÑ×¢²á³É¹¦£¬ÇëµÇÂ¼]["+strDate+"]\n";
+            // æ³¨å†ŒæˆåŠŸ
+            QString str = "ç³»ç»Ÿæç¤ºï¼š[ç”¨æˆ·å·²æ³¨å†ŒæˆåŠŸï¼Œè¯·ç™»å½•]["+strDate+"]\n";
             this->m_ui->m_EditRecord->append(str);
         }
         else if(pConn->type == -11)
         {
-             // µ±Ç°ÓÃ»§ÒÑ´æÔÚ
-            QString str = "ÏµÍ³ÌáÊ¾£º[µ±Ç°Òª×¢²áµÄÓÃ»§ÒÑ´æÔÚ£¬Çë¸ü»»Ïà¹ØĞÅÏ¢]["+strDate+"]\n";
+             // å½“å‰ç”¨æˆ·å·²å­˜åœ¨
+            QString str = "ç³»ç»Ÿæç¤ºï¼š[å½“å‰è¦æ³¨å†Œçš„ç”¨æˆ·å·²å­˜åœ¨ï¼Œè¯·æ›´æ¢ç›¸å…³ä¿¡æ¯]["+strDate+"]\n";
             this->m_ui->m_EditRecord->append(str);
         }
         else if(pConn->type == 2)
         {
-            // Ë½ÁÄ´¦Àí            
+            // ç§èŠå¤„ç†            
             ChatContent *pNode = (ChatContent*)pData;
             int id = pNode->destuserid;
             map<int,UserNode>::iterator it = this->m_mapuserlist.find(id);
             if(it != m_mapuserlist.end())
             {
 
-                QString str = "ÏµÍ³ÌáÊ¾:ÓÃ»§["+tr(it->second.strName)+"]¶Ô [ÎÒ] Ëµ ["+tr(pNode->strContent)+"]["+strDate+"]\n";
+                QString str = "ç³»ç»Ÿæç¤º:ç”¨æˆ·["+tr(it->second.strName)+"]å¯¹ [æˆ‘] è¯´ ["+tr(pNode->strContent)+"]["+strDate+"]\n";
                 this->m_ui->m_EditRecord->append(str);
             }
             else
             {
-                QString str = "ÏµÍ³ÌáÊ¾:[Ò»Ìõ²»ÄÜÊ¶±ğµÄË½ÁÄĞÅÏ¢] ["+tr(pNode->strContent)+"]["+strDate+"]\n";
+                QString str = "ç³»ç»Ÿæç¤º:[ä¸€æ¡ä¸èƒ½è¯†åˆ«çš„ç§èŠä¿¡æ¯] ["+tr(pNode->strContent)+"]["+strDate+"]\n";
                 this->m_ui->m_EditRecord->append(str);
             }
         }
         else if(pConn->type == 3)
         {
-            // ÈºÁÄ´¦Àí
+            // ç¾¤èŠå¤„ç†
             ChatContent *pNode = (ChatContent*)pData;
             int id = pNode->destuserid;
             map<int,UserNode>::iterator it = this->m_mapuserlist.find(id);
             if(it != m_mapuserlist.end())
             {
 
-                QString str = "ÏµÍ³ÌáÊ¾:ÓÃ»§["+tr(it->second.strName)+"]¶Ô [´ó¼Ò] Ëµ ["+tr(pNode->strContent)+"]["+strDate+"]\n";
+                QString str = "ç³»ç»Ÿæç¤º:ç”¨æˆ·["+tr(it->second.strName)+"]å¯¹ [å¤§å®¶] è¯´ ["+tr(pNode->strContent)+"]["+strDate+"]\n";
                 this->m_ui->m_EditRecord->append(str);
             }
             else
             {
-                QString str = "ÏµÍ³ÌáÊ¾:[Ò»Ìõ²»ÄÜÊ¶±ğµÄÈºÁÄĞÅÏ¢] ["+tr(pNode->strContent)+"]["+strDate+"]\n";
+                QString str = "ç³»ç»Ÿæç¤º:[ä¸€æ¡ä¸èƒ½è¯†åˆ«çš„ç¾¤èŠä¿¡æ¯] ["+tr(pNode->strContent)+"]["+strDate+"]\n";
                 this->m_ui->m_EditRecord->append(str);
             }
         }
         else if(pConn->type == 4)
         {
-            // ÍË³ö´¦Àí
+            // é€€å‡ºå¤„ç†
             int id = pConn->srcuserid;
             map<int,UserNode>::iterator it = this->m_mapuserlist.find(id);
             if(it != m_mapuserlist.end())
             {
-                QString str = "ÏµÍ³ÌáÊ¾:ÓÃ»§["+tr(it->second.strName)+"] ÍË³ö ["+strDate+"]\n";
+                QString str = "ç³»ç»Ÿæç¤º:ç”¨æˆ·["+tr(it->second.strName)+"] é€€å‡º ["+strDate+"]\n";
                 this->m_ui->m_EditRecord->append(str);
-                // ¼ÓÈëµ½µ±Ç°ÁĞ±íÖĞ
+                // åŠ å…¥åˆ°å½“å‰åˆ—è¡¨ä¸­
                 this->m_mapuserlist.erase(id);                
                for(int i =0; i < m_ui->m_UserList->count(); i++)
                {
@@ -235,13 +235,13 @@ void MainDlg::receiveMessage()
             }
             else
             {
-                 QString str = "ÏµÍ³ÌáÊ¾:[Ò»Ìõ²»ÄÜÊ¶±ğµÄÓÃ»§ÍË³öÃüÁî]["+strDate+"]\n";
+                 QString str = "ç³»ç»Ÿæç¤º:[ä¸€æ¡ä¸èƒ½è¯†åˆ«çš„ç”¨æˆ·é€€å‡ºå‘½ä»¤]["+strDate+"]\n";
                 this->m_ui->m_EditRecord->append(str);
             }
         }
         else
         {
-            QString str = "ÏµÍ³ÌáÊ¾£º[µ±Ç°ÓĞ²»Ê¶±ğµÄÃüÁî]["+strDate+"]\n";
+            QString str = "ç³»ç»Ÿæç¤ºï¼š[å½“å‰æœ‰ä¸è¯†åˆ«çš„å‘½ä»¤]["+strDate+"]\n";
             this->m_ui->m_EditRecord->append(str);
         }
     }
@@ -251,7 +251,7 @@ void MainDlg::InitUDPSocket()
     QString str = m_ui->Text_Port->text();
     if(str.length() <= 0)
     {
-       QMessageBox::information(this, "´íÎó","ÇëÊäÈë¶Ë¿ÚºÅ");
+       QMessageBox::information(this, "é”™è¯¯","è¯·è¾“å…¥ç«¯å£å·");
        return ;
     }
 
@@ -260,14 +260,14 @@ void MainDlg::InitUDPSocket()
     QString strTip;
     strTip = tr(port);
     this->m_ui->m_EditRecord->append(str+strTip);
-    //¼àÌıUDPÊı¾İ°ü£¬Èç¹ûÓĞÊı¾İ°üµÖ´ïµ÷ÓÃreceiveessag²Û½øĞĞ´¦Àí
+    //ç›‘å¬UDPæ•°æ®åŒ…ï¼Œå¦‚æœæœ‰æ•°æ®åŒ…æŠµè¾¾è°ƒç”¨receiveessagæ§½è¿›è¡Œå¤„ç†
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(str.toInt());
     connect(udpSocket, SIGNAL(readyRead()), this, SLOT(receiveMessage()));
 }
 void MainDlg::on_Button_Login_clicked()
 {
-    // ÓĞ¹ØµÇÂ¼µÄÊÂ¼ş´¦Àí
+    // æœ‰å…³ç™»å½•çš„äº‹ä»¶å¤„ç†
     strName = m_ui->Text_Name->text();
     strPassword = m_ui->Text_Pass->text();
     strIP = m_ui->Text_IP->text();
@@ -276,7 +276,7 @@ void MainDlg::on_Button_Login_clicked()
        || strPassword.length()<=0
        || strIP.length() <= 0)
     {
-        QMessageBox::information(this, "´íÎó","ÇëÊäÈëÕıÈ·µÄ²ÎÊıĞÅÏ¢");
+        QMessageBox::information(this, "é”™è¯¯","è¯·è¾“å…¥æ­£ç¡®çš„å‚æ•°ä¿¡æ¯");
         return ;
     }
     if(NULL == udpSocket)
@@ -297,13 +297,13 @@ void MainDlg::on_Button_Login_clicked()
     *pnode = node;
     SendInfor(buf,sizeof(ConnProto)+sizeof(UserContent));
     QString strTip;
-    strTip=tr("ĞÅÏ¢ÌáÊ¾:[µÇÂ¼] ÓÃ»§Ãû:[")+tr(node.strName)+tr("]ÃÜÂë:[")+tr(node.password)+tr("]");
+    strTip=tr("ä¿¡æ¯æç¤º:[ç™»å½•] ç”¨æˆ·å:[")+tr(node.strName)+tr("]å¯†ç :[")+tr(node.password)+tr("]");
     this->m_ui->m_EditRecord->append(strTip);
 }
 
 void MainDlg::on_Button_Reg_clicked()
 {
-    // ÓĞ¹Ø×¢²áµÄÊÂ¼ş´¦Àí
+    // æœ‰å…³æ³¨å†Œçš„äº‹ä»¶å¤„ç†
     QString strName = m_ui->Text_Name->text();
     QString strPassword = m_ui->Text_Pass->text();
     QString strIP = m_ui->Text_IP->text();
@@ -312,7 +312,7 @@ void MainDlg::on_Button_Reg_clicked()
        || strPassword.length()<=0
        || strIP.length() <= 0)
     {
-        QMessageBox::information(this, "´íÎó","ÇëÊäÈëÕıÈ·µÄ²ÎÊıĞÅÏ¢");
+        QMessageBox::information(this, "é”™è¯¯","è¯·è¾“å…¥æ­£ç¡®çš„å‚æ•°ä¿¡æ¯");
         return ;
     }
     if(NULL == udpSocket)
@@ -332,26 +332,26 @@ void MainDlg::on_Button_Reg_clicked()
     UserContent *pnode = (UserContent *)pData;
     *pnode = node;
     QString strTip;
-    strTip=tr("ĞÅÏ¢ÌáÊ¾:[×¢²á] ÓÃ»§Ãû:[")+tr(node.strName)+tr("]ÃÜÂë:[")+tr(node.password)+tr("]");
+    strTip=tr("ä¿¡æ¯æç¤º:[æ³¨å†Œ] ç”¨æˆ·å:[")+tr(node.strName)+tr("]å¯†ç :[")+tr(node.password)+tr("]");
     this->m_ui->m_EditRecord->append(strTip);
     SendInfor(buf,sizeof(ConnProto)+sizeof(UserContent));
 }
 
 void MainDlg::on_Button_Exit_clicked()
 {
-    // ÓĞ¹ØÍË³ö
+    // æœ‰å…³é€€å‡º
     on_m_ButtonExit_clicked();
     exit(0);
 }
 
 void MainDlg::on_m_ButtonExit_clicked()
 {
-    // ÓĞ¹ØÀëÏßµÄÊÂ¼ş´¦Àí
+    // æœ‰å…³ç¦»çº¿çš„äº‹ä»¶å¤„ç†
     if(strName.length()<= 0
        || strPassword.length()<=0
        || strIP.length() <= 0)
     {
-        QMessageBox::information(this, "´íÎó","ÇëÊäÈëÕıÈ·µÄ²ÎÊıĞÅÏ¢");
+        QMessageBox::information(this, "é”™è¯¯","è¯·è¾“å…¥æ­£ç¡®çš„å‚æ•°ä¿¡æ¯");
         return ;
     }
     if(NULL == udpSocket)
@@ -366,13 +366,13 @@ void MainDlg::on_m_ButtonExit_clicked()
     *pconn = conn;
     SendInfor(buf,sizeof(ConnProto));
     QString strTip;
-    strTip=tr("ĞÅÏ¢ÌáÊ¾:µ±Ç°ÓÃ»§ÕıÔÚÀëÏß ");
+    strTip=tr("ä¿¡æ¯æç¤º:å½“å‰ç”¨æˆ·æ­£åœ¨ç¦»çº¿ ");
     this->m_ui->m_EditRecord->append(strTip);
 }
 
 void MainDlg::on_m_UserList_currentRowChanged(int currentRow)
 {
-    // µ±Ñ¡ÔñÊ±£¬µ±Ç°Ñ¡ÖĞµÄÁĞ±í
+    // å½“é€‰æ‹©æ—¶ï¼Œå½“å‰é€‰ä¸­çš„åˆ—è¡¨
     if(currentRow == 0)
         m_nCurrentID = -1;
     else

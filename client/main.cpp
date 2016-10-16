@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     QTranslator translator;
     translator.load(":/data/zh_CN");
     a.installTranslator(&translator);
-    // 用于中文显示
+    // 鐢ㄤ簬涓枃鏄剧ず
     QTextCodec::setCodecForTr(QTextCodec::codecForName("GB2312"));
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB2312"));
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("GB2312"));
