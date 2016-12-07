@@ -17,7 +17,6 @@ using namespace std;
 
 #define SOCKET_MAXBUF 1024
 
-////////////////////////////////////////////////////////////////////////////
 //基本信息格式，用于存入排列缓存队列中
 struct ConnProto
 {
@@ -63,7 +62,8 @@ struct PacketNode
 	int  port;
 };
 
-////////////////////////////////////////////////////////////////////////////
+
+
 // 公共数据区　用于存储公共的信息数据
 queue<PacketNode> g_qPacketNodes;  // 用于表示请求的信息队列
 queue<string>	g_pWriteNodes; // 用于向MysQL写入的队列信息
