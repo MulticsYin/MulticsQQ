@@ -9,7 +9,6 @@
 #include <time.h>
 #include <sys/time.h>
 #include <unistd.h>
-
 #include <map>
 #include <queue>
 #include <string>
@@ -43,12 +42,11 @@ struct UserContent
 // 用于内部的用户信息表的存储
 struct UserNode
 {
-	// 在线用户信息结点
-	int  id;
-	char strName[20]; // 姓名
+	int  id;           // 在线用户信息结点
+	char strName[20];  // 姓名
 	char password[10]; // 所在的密码
-	char strIP[16];   // 所在IP地址
-	int  port;  // 端口号
+	char strIP[16];    // 所在IP地址
+	int  port;         // 端口号
 	char startdate[30];
 	char enddate[30];
 };
@@ -292,7 +290,7 @@ void* IMServerThread(void *threapara)
 			node.port = ntohs(remote_addr.sin_port);
 			GetCurTime(node.date,1);
 
-			printf("信息：接收长度:[%d] 实际长度:[%d] IP地址:[%s] 端口号:[%d] [%d] [%d]\n",recvlen,strlen(node.infor),node.strIP,node.port,htons(remote_addr.sin_port),remote_addr.sin_port);
+			printf("信息：接收长度:[%d] 实际长度:[%ld] IP地址:[%s] 端口号:[%d] [%d] [%d]\n",recvlen,strlen(node.infor),node.strIP,node.port,htons(remote_addr.sin_port),remote_addr.sin_port);
 			g_qPacketNodes.push(node);
 		}	
 	}
