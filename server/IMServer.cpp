@@ -83,7 +83,7 @@ char g_tableName[30];
 char g_strIP[15];
 char g_strUser[50];
 char g_strPass[20];
-int  g_nPort = 3306;
+unsigned int  g_nPort = 3306;
 
 
 ////////////////////////////////////////////////////////////
@@ -210,10 +210,10 @@ void Help()
 	printf("==================================================================\n");
 	printf("IMServer version：V1.0\n");
 	printf("author：my2005lb\n\n\n");
-	printf("%-12s %-12s\n","run im server","开启聊天服务");
-	printf("%-12s %-12s\n","stop im server","关闭聊天服务");
-	printf("%-12s %-12s\n","status","状态查询");
-	printf("%-12s %-12s\n","exit","退出");
+	printf("%-12s\t %-12s\n","run im server","开启聊天服务");
+	printf("%-12s\t %-12s\n","stop im server","关闭聊天服务");
+	printf("%-12s\t %-12s\n","status","状态查询");
+	printf("%-12s\t %-12s\n","exit","退出");
 	printf("==================================================================\n");
 }
 // 采集的开启与关闭
@@ -254,11 +254,11 @@ void ShowStatus()
 	printf("==========当前的状态查询==============\n");
 	printf("系统当前处于:[%s]\n",g_bIsIMServer>0?"启动":"关闭");
 	printf("\n==========用户信息状态==============\n");
-	printf("当前在线用户个数:[%d]\n",g_pOnLineUserMap.size());
-	printf("当前离线用户个数:[%d]\n",g_pDisLineUserMap.size());
-	printf("当前请求队列的个数:[%d]\n",g_qPacketNodes.size());
+	printf("当前在线用户个数:[%ld]\n",g_pOnLineUserMap.size());
+	printf("当前离线用户个数:[%ld]\n",g_pDisLineUserMap.size());
+	printf("当前请求队列的个数:[%ld]\n",g_qPacketNodes.size());
 	printf("\n==========数据存储状态查询==============\n");
-	printf("当前待写入的数据请求个数:[%d]\n",g_pWriteNodes.size());
+	printf("当前待写入的数据请求个数:[%ld]\n",g_pWriteNodes.size());
 	printf("成功写入的个数:[%d]\n",g_lWriteNum);
 	printf("写入失败的个数:[%d]\n",g_lWriteFailNum);
 }
