@@ -196,22 +196,22 @@ void InitDB()
 void DBInfor()
 {
 	printf("---------数据库配置信息----------------\n");
-	printf("%-12s %-12s\n","用户名",g_strUser);
-	printf("%-12s %-12s\n","密码",g_strPass);
-	printf("%-12s %-12s\n","IP",g_strIP);
-	printf("%-12s %-12d\n","Port",g_nPort);
-	printf("%-12s %-12s\n","数据库名",g_dbName);
-	printf("%-12s %-12s\n","表名",g_tableName);
+	printf("%-12s \t %-12s\n","用户名",g_strUser);
+	printf("%-12s \t %-12s\n","密码",g_strPass);
+	printf("%-12s \t %-12s\n","IP",g_strIP);
+	printf("%-12s \t %-12d\n","Port",g_nPort);
+	printf("%-12s \t %-12s\n","数据库名",g_dbName);
+	printf("%-12s \t %-12s\n","表名",g_tableName);
 }
 void Help()
 {
 	printf("==================================================================\n");
 	printf("IMServer version：V1.0\n");
 	printf("author：my2005lb\n\n\n");
-	printf("%-12s\t %-12s\n","run im server","开启聊天服务");
-	printf("%-12s\t %-12s\n","stop im server","关闭聊天服务");
-	printf("%-12s\t %-12s\n","status","状态查询");
-	printf("%-12s\t %-12s\n","exit","退出");
+	printf("%-12s \t %-12s\n","run im server","开启聊天服务");
+	printf("%-12s \t %-12s\n","stop im server","关闭聊天服务");
+	printf("%-12s \t %-12s\n","status","状态查询");
+	printf("%-12s \t %-12s\n","exit","退出");
 	printf("==================================================================\n");
 }
 // 采集的开启与关闭
@@ -389,18 +389,18 @@ int GetCurTime(char *strTime,int type)
 // 用于初始化用户信息列表
 void InitUserList()
 {
-	MYSQL_RES * res ;//保存查询结果
+	MYSQL_RES * res ; //保存查询结果
 	MYSQL_FIELD * fd ;//保存字段结果
 	MYSQL_ROW row ;
-	int num_row = 0;//得到记录数量
-	int num_col = 0;//得到字段数量
+	int num_row = 0;  //得到记录数量
+	int num_col = 0;  //得到字段数量
 	const char *strSQL="select id,name,password from user_infor";
 	if(!mysql_real_query( m_pMyData, strSQL,strlen(strSQL)))
 	{
 	//	printf("执行成功，影响%d行\n",mysql_affected_rows(m_pMyData));//得到受影响的行数
 		res  = mysql_store_result( m_pMyData ) ;//保存查询结果
 		num_row = (int) mysql_num_rows( res ) ; //得到记录数量
-		num_col = mysql_num_fields( res ) ;//得到字段数量
+		num_col = mysql_num_fields( res ) ;     //得到字段数量
 		
 		for (int f1 = 0; f1 < num_row; f1++) 
 		{
