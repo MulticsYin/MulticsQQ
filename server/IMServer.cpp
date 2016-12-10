@@ -28,7 +28,7 @@ struct ConnProto
 // 用于传送聊天内容
 struct ChatContent
 {
-	int  destuserid; // 目标用户，如果选择的是私聊
+	int  destuserid;      // 目标用户，如果选择的是私聊
 	char strContent[200]; // 聊天的内容，最多为200个字符	
 };
 
@@ -84,7 +84,6 @@ char g_strPass[20];
 unsigned int  g_nPort = 3306;
 
 
-////////////////////////////////////////////////////////////
 // 公开函数头信息
 void Help();
 
