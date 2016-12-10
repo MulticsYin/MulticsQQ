@@ -18,7 +18,7 @@ struct ConnProto
 // 用于传送聊天内容
 struct ChatContent
 {
-        int  destuserid; // 目标用户，如果选择的是私聊
+        int  destuserid;      // 目标用户，如果选择的是私聊
         char strContent[200]; // 聊天的内容，最多为200个字符
 };
 
@@ -32,12 +32,11 @@ struct UserContent
 // 用于内部的用户信息表的存储
 struct UserNode
 {
-        // 在线用户信息结点
-        int  id;
-        char strName[20]; // 姓名
+        int  id;           // 在线用户信息结点
+        char strName[20];  // 姓名
         char password[10]; // 所在的密码
-        char strIP[16];   // 所在IP地址
-        int  port;  // 端口号
+        char strIP[16];    // 所在IP地址
+        int  port;         // 端口号
         char startdate[30];
         char enddate[30];
 };
