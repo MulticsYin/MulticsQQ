@@ -1,4 +1,4 @@
-/*为聊天软件建立相应数据库，表*/
+#为聊天软件建立相应数据库，表
 
 create database chat;
 use chat;
