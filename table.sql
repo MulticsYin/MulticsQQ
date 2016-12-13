@@ -2,11 +2,12 @@
 
 create database chat;
 use chat;
+#用户信息表
 create table user_infor( 
-    id       int primary key,
-    name     varchar(20) not null,
-    password varchar(10) not null,
-    regtime  datetime not null
+    id       int primary key,      #用于表示用户的ID号，全局唯一;
+    name     varchar(20) not null, #用于表示用户的代号;
+    password varchar(10) not null, #用于存储用户的密码;
+    regtime  datetime not null     #用于表示用户注册的时间;
 );
 
 create table user_chat( 
