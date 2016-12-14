@@ -157,10 +157,10 @@ int main()
 void InitDB()
 {
     //在此设置自己连接数据库信息;
-	strcpy(g_dbName,"chat");
-	strcpy(g_strIP,"127.0.0.1");
-	strcpy(g_strUser,"root");
-	strcpy(g_strPass,""); //设置自己数据库密码;
+	strcpy(g_dbName,"chat");     //选择的数据库，使用table.sql建立;
+	strcpy(g_strIP,"127.0.0.1"); //局域网IP;
+	strcpy(g_strUser,"root");    //设置用户名;
+	strcpy(g_strPass,"");        //设置自己数据库密码;
 	strcpy(g_tableName,"");	
 
 	// 进行数据库连接，如果连接失败，则选择系统退出
