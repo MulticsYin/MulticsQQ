@@ -127,11 +127,11 @@ int main()
 		 char command[255];
 	     gets(command);
 	
-		 if(strcmp(command,"run im server")==0)
+		 if(strcmp(command,"run")==0)
 		 {
 			 RunIMServer();
 		 }
-		 else if(strcmp(command,"stop im server")==0)
+		 else if(strcmp(command,"stop")==0)
 		 {
 			 StopIMServer();
 		 }
@@ -207,8 +207,8 @@ void Help()
 	printf("==================================================================\n");
 	printf("IMServer version：V1.0\n");
 	printf("author：my2005lb\n\n\n");
-	printf("%-12s \t %-12s\n","run im server","开启聊天服务");
-	printf("%-12s \t %-12s\n","stop im server","关闭聊天服务");
+	printf("%-12s \t %-12s\n","run","开启聊天服务");
+	printf("%-12s \t %-12s\n","stop","关闭聊天服务");
 	printf("%-12s \t %-12s\n","status","状态查询");
 	printf("%-12s \t %-12s\n","exit","退出");
 	printf("==================================================================\n");
