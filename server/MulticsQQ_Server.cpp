@@ -17,9 +17,9 @@ using namespace std;
 #define SOCKET_MAXBUF 1024
 
 //基本信息格式，用于存入排列缓存队列中
+//进行通信协议的定义
 struct ConnProto
 {
-	// 进行通信协议的定义
 	int type; // 客户机对服务器0 为登录；1 为注册；2 为向指定的用户聊天；3 为群聊；4 为退出
 			  // 服务器对客户机0 为登录成功，此时srcuserid保存当前在线用户数目；-1为操作失败 2 为有用户信息到；3 有群用户信息到；4 有用户退出
 	int srcuserid; // 源用户ID号
@@ -28,27 +28,27 @@ struct ConnProto
 // 用于传送聊天内容
 struct ChatContent
 {
-	int  destuserid;      // 目标用户，如果选择的是私聊
-	char strContent[200]; // 聊天的内容，最多为200个字符	
+	int  destuserid;      // 目标用户ID，私聊指定，群聊忽略;
+	char strContent[200]; // 聊天的内容，最多为200个字符;
 };
 
 // 用于传送内容信息
 struct UserContent
 {
-	char strName[20];
-	char password[10];
+	char strName[20];  //用户姓名;
+	char password[10]; //用户密码;
 };
 
 // 用于内部的用户信息表的存储
 struct UserNode
 {
-	int  id;           // 在线用户信息结点
+	int  id;           // 在线用户信息节点ID
 	char strName[20];  // 姓名
 	char password[10]; // 所在的密码
 	char strIP[16];    // 所在IP地址
 	int  port;         // 端口号
-	char startdate[30];
-	char enddate[30];
+	char startdate[30];//上线时间（此时忽略）
+	char enddate[30];  //离线时间（此时忽略）
 };
 
 // 用于内部的排队信息队列
@@ -72,7 +72,7 @@ map<int,UserNode> g_pDisLineUserMap;// 用MAP查找表的形式保存当前不�
 MYSQL* m_pMyData;                   //msyql 连接句柄
 int g_nServerSocket;                // UDP套接字
 int g_ServerPort = 9000;            // 端口
-int g_bIsIMServer = 0;              // 是否开启采集
+int g_bIsMulticsQQ_Server = 0;              // 是否开启采集
 int g_lWriteNum = 0;
 int g_lWriteFailNum = 0;
 
@@ -88,8 +88,8 @@ unsigned int  g_nPort = 3306;
 void Help();
 
 // IM Server的开启与关闭
-void RunIMServer();
-void StopIMServer();
+void RunMulticsQQ_Server();
+void StopMulticsQQ_Server();
 
 // 状态查询
 void ShowStatus();
@@ -100,8 +100,8 @@ void DBInfor();
 
 // 三个线程
 void* WriteThread(void *threapara);
-void* IMServerThread(void *threapara);
-void* IMServerApplicationThread(void *threapara);
+void* MulticsQQ_ServerThread(void *threapara);
+void* MulticsQQ_ServerApplicationThread(void *threapara);
 int GetCurTime(char *strTime,int type);
 
 void InitUserList();
@@ -116,7 +116,8 @@ void OtherFunc(char *pData,PacketNode &node,int srcid);
 
 int main()
 {
-	printf("即时聊天服务器\n");
+	printf("MulticsQQ_Server...\n");
+    Help();
 	char strTime[100];
 	GetCurTime(strTime,0);
 	printf("%s\n",strTime);
@@ -129,11 +130,11 @@ int main()
 	
 		 if(strcmp(command,"run")==0)
 		 {
-			 RunIMServer();
+			 RunMulticsQQ_Server();
 		 }
 		 else if(strcmp(command,"stop")==0)
 		 {
-			 StopIMServer();
+			 StopMulticsQQ_Server();
 		 }
 		 else if(strcmp(command,"status")==0)
 		 {
@@ -189,55 +190,55 @@ void InitDB()
 		DBInfor();
 		exit(0);
     }
-	// 用于
+	//下载当前用户信息列表;
 	InitUserList();
 }
 void DBInfor()
 {
 	printf("---------数据库配置信息----------------\n");
-	printf("%-12s \t %-12s\n","用户名",g_strUser);
-	printf("%-12s \t %-12s\n","密码",g_strPass);
-	printf("%-12s \t %-12s\n","IP",g_strIP);
-	printf("%-12s \t %-12d\n","Port",g_nPort);
-	printf("%-12s \t %-12s\n","数据库名",g_dbName);
-	printf("%-12s \t %-12s\n","表名",g_tableName);
+	printf("\t %-12s \t %-12s\n","用户名",g_strUser);
+	printf("\t %-12s \t %-12s\n","密码",g_strPass);
+	printf("\t %-12s \t %-12s\n","IP",g_strIP);
+	printf("\t %-12s \t %-12d\n","Port",g_nPort);
+	printf("\t %-12s \t %-12s\n","数据库名",g_dbName);
+	printf("\t %-12s \t %-12s\n","表名",g_tableName);
 }
 void Help()
 {
 	printf("==================================================================\n");
-	printf("IMServer version：V1.0\n");
-	printf("author：my2005lb\n\n\n");
-	printf("%-12s \t %-12s\n","run","开启聊天服务");
-	printf("%-12s \t %-12s\n","stop","关闭聊天服务");
-	printf("%-12s \t %-12s\n","status","状态查询");
-	printf("%-12s \t %-12s\n","exit","退出");
+	printf("\t MulticsQQ_Server version：V1.0\n");
+	printf("\t author：my2005lb\n\n\n");
+	printf("\t %-12s \t %-12s\n","run","开启聊天服务");
+	printf("\t %-12s \t %-12s\n","stop","关闭聊天服务");
+	printf("\t %-12s \t %-12s\n","status","状态查询");
+	printf("\t %-12s \t %-12s\n","exit","退出");
 	printf("==================================================================\n");
 }
 // 采集的开启与关闭
-void RunIMServer()
+void RunMulticsQQ_Server()
 {
-	if(g_bIsIMServer)
+	if(g_bIsMulticsQQ_Server)
 	{
 		printf("当前的聊天服务已处于开启状态....\n");
 	}
 	else
 	{
 		// 启动三个线程　分别是数据接收线程、聊天服务线程、数据库写入线程　
-		g_bIsIMServer = 1;
+		g_bIsMulticsQQ_Server = 1;
 		pthread_t threadid;
-		pthread_create(&threadid, NULL, IMServerThread, NULL);     
+		pthread_create(&threadid, NULL, MulticsQQ_ServerThread, NULL);     
 		pthread_t threadid1;
-		pthread_create(&threadid1, NULL, IMServerApplicationThread, NULL);  
+		pthread_create(&threadid1, NULL, MulticsQQ_ServerApplicationThread, NULL);  
 		pthread_t threadid2;
 		pthread_create(&threadid2, NULL, WriteThread, NULL);  
 		printf("聊天服务已开启....\n");
 	}
 }
-void StopIMServer()
+void StopMulticsQQ_Server()
 {
-	if(g_bIsIMServer)
+	if(g_bIsMulticsQQ_Server)
 	{
-		g_bIsIMServer = 0;		
+		g_bIsMulticsQQ_Server = 0;		
 		printf("聊天服务已关闭....\n");
 	}
 	else
@@ -249,7 +250,7 @@ void StopIMServer()
 void ShowStatus()
 {
 	printf("==========当前的状态查询==============\n");
-	printf("系统当前处于:[%s]\n",g_bIsIMServer>0?"启动":"关闭");
+	printf("系统当前处于:[%s]\n",g_bIsMulticsQQ_Server>0?"启动":"关闭");
 	printf("\n==========用户信息状态==============\n");
 	printf("当前在线用户个数:[%ld]\n",g_pOnLineUserMap.size());
 	printf("当前离线用户个数:[%ld]\n",g_pDisLineUserMap.size());
@@ -259,7 +260,7 @@ void ShowStatus()
 	printf("成功写入的个数:[%d]\n",g_lWriteNum);
 	printf("写入失败的个数:[%d]\n",g_lWriteFailNum);
 }
-void* IMServerThread(void *threapara)
+void* MulticsQQ_ServerThread(void *threapara)
 {
 	// 用于初始化UDP套接字
 	int recvlen;
@@ -278,7 +279,7 @@ void* IMServerThread(void *threapara)
 	}
 	socklen_t len = sizeof(remote_addr);
 	// 判断是否处于服务状态，若处于服务状态，则加入服务队列
-	while (g_bIsIMServer) {
+	while (g_bIsMulticsQQ_Server) {
 		//cout << "config Server State is runing...." << endl;
 		PacketNode node;
 		recvlen = recvfrom(g_nServerSocket, node.infor, SOCKET_MAXBUF, 0,
@@ -295,9 +296,9 @@ void* IMServerThread(void *threapara)
 	}
 	return NULL;
 }
-void* IMServerApplicationThread(void *threapara)
+void* MulticsQQ_ServerApplicationThread(void *threapara)
 {
-	while (g_bIsIMServer) {
+	while (g_bIsMulticsQQ_Server) {
 		if(g_qPacketNodes.size() <= 0)
 		{
 			// 如果当前的队列长度为0，则睡眠
@@ -342,7 +343,7 @@ void* IMServerApplicationThread(void *threapara)
 }
 void* WriteThread(void *threapara)
 {		
-	while(g_bIsIMServer)
+	while(g_bIsMulticsQQ_Server)
 	{
 		if(g_pWriteNodes.size() > 0)
 		{
