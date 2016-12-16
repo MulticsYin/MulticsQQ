@@ -69,14 +69,14 @@ queue<string>	g_pWriteNodes;      // 用于向MysQL写入的队列信息
 map<int,UserNode> g_pOnLineUserMap; // 用MAP查找表的形式保存当前在线用户
 map<int,UserNode> g_pDisLineUserMap;// 用MAP查找表的形式保存当前不在线用户
 
-MYSQL* m_pMyData;                   //msyql 连接句柄
-int g_nServerSocket;                // UDP套接字
-int g_ServerPort = 9000;            // 端口
-int g_bIsMulticsQQ_Server = 0;              // 是否开启采集
+MYSQL* m_pMyData;             //msyql 连接句柄
+int g_nServerSocket;          // UDP套接字
+int g_ServerPort = 9000;      // 端口
+int g_bIsMulticsQQ_Server = 0;// 是否开启采集
 int g_lWriteNum = 0;
 int g_lWriteFailNum = 0;
 
-char g_dbName[30];                  // 数据表名
+char g_dbName[30];            // 数据表名
 char g_tableName[30];
 char g_strIP[15];
 char g_strUser[50];
