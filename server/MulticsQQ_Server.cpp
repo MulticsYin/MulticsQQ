@@ -87,30 +87,44 @@ unsigned int  g_nPort = 3306;
 // 公开函数头信息
 void Help();
 
-// IM Server的开启与关闭
+// MulticsQQ_Server的开启与关闭
 void RunMulticsQQ_Server();
 void StopMulticsQQ_Server();
 
 // 状态查询
 void ShowStatus();
 
+//MySQL初始化发送链接;
 void InitDB();
+//数据库配置信息;
 void DBInfor();
 
 
-// 三个线程
+// 基于排队的多线程，并行化处理; 
+// 数据写入模块，将数据信息队列中的节点信息，依次写入到数据库中;
 void* WriteThread(void *threapara);
+//数据接收模块;
 void* MulticsQQ_ServerThread(void *threapara);
+//业务服务模块，对用户请求的业务进行响应;
 void* MulticsQQ_ServerApplicationThread(void *threapara);
+//获取时间;
 int GetCurTime(char *strTime,int type);
 
+//下载当前用户信息表;
 void InitUserList();
+//封装服务器端的数据发送工作;
 void SendInfor(int srcid,char *strinfor,int destid,int type,int count);
+//登录模块;
 void LoginFunc(char *pData,PacketNode &node,int srcid);
+//注册模块;
 void RegisterFunc(char *pData,PacketNode &node,int srcid);
+//私聊模块;
 void PrivateChatFunc(char *pData,PacketNode &node,int srcid);
+//群聊模块;
 void PublicChatFunc(char *pData,PacketNode &node,int srcid);
+//离线模块;
 void QuitFunc(char *pData,PacketNode &node,int srcid);
+//异常模块;
 void OtherFunc(char *pData,PacketNode &node,int srcid);
 ////////////////////////////////////////////////////////////
 
@@ -130,27 +144,27 @@ int main()
 	
 		 if(strcmp(command,"run")==0)
 		 {
-			 RunMulticsQQ_Server();
+			RunMulticsQQ_Server();
 		 }
 		 else if(strcmp(command,"stop")==0)
 		 {
-			 StopMulticsQQ_Server();
+			StopMulticsQQ_Server();
 		 }
 		 else if(strcmp(command,"status")==0)
 		 {
-			 ShowStatus();
+			ShowStatus();
 		 }
 		 else if(strcmp(command,"exit")==0)
 		 {
-			 exit(0);
+			exit(0);
 		 }
 		 else if(strcmp(command,"help") == 0)
 		 {
-			 Help();
+			Help();
 		 }
 		 else
 		 {
-			 printf("对不起，该命令不识别!!!\n");
+			printf("对不起，该命令不识别!!!\n");
 		 }
 	 }
 	return 0;
