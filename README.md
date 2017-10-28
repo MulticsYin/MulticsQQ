@@ -21,3 +21,9 @@
 * 《Linux C编程从入门到精通》
 * 《MySQL技术内幕》
 * 《UNIX网络编程》
+
+
+## License
+
+MulticsQQ source code is licensed under the Apache Licence, Version 2.0
+(http://www.apache.org/licenses/LICENSE-2.0.html).
