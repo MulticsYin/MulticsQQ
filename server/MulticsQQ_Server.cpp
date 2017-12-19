@@ -18,30 +18,26 @@ using namespace std;
 
 //基本信息格式，用于存入排列缓存队列中
 //进行通信协议的定义
-struct ConnProto
-{
+struct ConnProto {
 	int type; // 客户机对服务器0 为登录；1 为注册；2 为向指定的用户聊天；3 为群聊；4 为退出
-			  // 服务器对客户机0 为登录成功，此时srcuserid保存当前在线用户数目；-1为操作失败 2 为有用户信息到；3 有群用户信息到；4 有用户退出
+		  // 服务器对客户机0 为登录成功，此时srcuserid保存当前在线用户数目；-1为操作失败 2 为有用户信息到；3 有群用户信息到；4 有用户退出
 	int srcuserid; // 源用户ID号
 };
 
 // 用于传送聊天内容
-struct ChatContent
-{
+struct ChatContent {
 	int  destuserid;      // 目标用户ID，私聊指定，群聊忽略;
 	char strContent[200]; // 聊天的内容，最多为200个字符;
 };
 
 // 用于传送内容信息
-struct UserContent
-{
+struct UserContent {
 	char strName[20];  //用户姓名;
 	char password[10]; //用户密码;
 };
 
 // 用于内部的用户信息表的存储
-struct UserNode
-{
+struct UserNode {
 	int  id;           // 在线用户信息节点ID
 	char strName[20];  // 姓名
 	char password[10]; // 所在的密码
@@ -52,8 +48,7 @@ struct UserNode
 };
 
 // 用于内部的排队信息队列
-struct PacketNode
-{
+struct PacketNode {
 	char infor[1024];
 	char date[30];
 	char strIP[16];
@@ -128,8 +123,7 @@ void QuitFunc(char *pData,PacketNode &node,int srcid);
 void OtherFunc(char *pData,PacketNode &node,int srcid);
 ////////////////////////////////////////////////////////////
 
-int main()
-{
+int main() {
 	printf("MulticsQQ_Server...\n");
     Help();
 	char strTime[100];
@@ -169,8 +163,7 @@ int main()
 	 }
 	return 0;
 }
-void InitDB()
-{
+void InitDB() {
     //在此设置自己连接数据库信息;
 	strcpy(g_dbName,"chat");     //选择的数据库，使用table.sql建立;
 	strcpy(g_strIP,"127.0.0.1"); //局域网IP;
@@ -207,8 +200,7 @@ void InitDB()
 	//下载当前用户信息列表;
 	InitUserList();
 }
-void DBInfor()
-{
+void DBInfor() {
 	printf("---------数据库配置信息----------------\n");
 	printf("\t %-12s \t %-12s\n","用户名",g_strUser);
 	printf("\t %-12s \t %-12s\n","密码",g_strPass);
@@ -217,8 +209,7 @@ void DBInfor()
 	printf("\t %-12s \t %-12s\n","数据库名",g_dbName);
 	printf("\t %-12s \t %-12s\n","表名",g_tableName);
 }
-void Help()
-{
+void Help() {
 	printf("==================================================================\n");
 	printf("\t MulticsQQ_Server version：V1.0\n");
 	printf("\t author：my2005lb\n\n\n");
@@ -229,8 +220,7 @@ void Help()
 	printf("==================================================================\n");
 }
 // 采集的开启与关闭
-void RunMulticsQQ_Server()
-{
+void RunMulticsQQ_Server() {
 	if(g_bIsMulticsQQ_Server)
 	{
 		printf("当前的聊天服务已处于开启状态....\n");
@@ -248,8 +238,7 @@ void RunMulticsQQ_Server()
 		printf("聊天服务已开启....\n");
 	}
 }
-void StopMulticsQQ_Server()
-{
+void StopMulticsQQ_Server() {
 	if(g_bIsMulticsQQ_Server)
 	{
 		g_bIsMulticsQQ_Server = 0;		
@@ -261,8 +250,7 @@ void StopMulticsQQ_Server()
 	}
 }
 // 状态查询
-void ShowStatus()
-{
+void ShowStatus() {
 	printf("==========当前的状态查询==============\n");
 	printf("系统当前处于:[%s]\n",g_bIsMulticsQQ_Server>0?"启动":"关闭");
 	printf("\n==========用户信息状态==============\n");
@@ -274,8 +262,7 @@ void ShowStatus()
 	printf("成功写入的个数:[%d]\n",g_lWriteNum);
 	printf("写入失败的个数:[%d]\n",g_lWriteFailNum);
 }
-void* MulticsQQ_ServerThread(void *threapara)
-{
+void* MulticsQQ_ServerThread(void *threapara) {
 	// 用于初始化UDP套接字
 	int recvlen;
 	struct sockaddr_in ser_addr;
@@ -310,8 +297,7 @@ void* MulticsQQ_ServerThread(void *threapara)
 	}
 	return NULL;
 }
-void* MulticsQQ_ServerApplicationThread(void *threapara)
-{
+void* MulticsQQ_ServerApplicationThread(void *threapara) {
 	while (g_bIsMulticsQQ_Server) {
 		if(g_qPacketNodes.size() <= 0)
 		{
@@ -355,8 +341,7 @@ void* MulticsQQ_ServerApplicationThread(void *threapara)
 	}
 	return NULL;
 }
-void* WriteThread(void *threapara)
-{		
+void* WriteThread(void *threapara) {		
 	while(g_bIsMulticsQQ_Server)
 	{
 		if(g_pWriteNodes.size() > 0)
@@ -377,8 +362,7 @@ void* WriteThread(void *threapara)
 	return NULL;
 }
 
-int GetCurTime(char *strTime,int type)
-{
+int GetCurTime(char *strTime,int type) {
     time_t t;
 	struct tm *tm = NULL;
     t = time(NULL);
@@ -401,8 +385,7 @@ int GetCurTime(char *strTime,int type)
     return 0;
 }
 // 用于初始化用户信息列表
-void InitUserList()
-{
+void InitUserList() {
 	MYSQL_RES * res ; //保存查询结果
 	MYSQL_FIELD * fd ;//保存字段结果
 	MYSQL_ROW row ;
@@ -433,8 +416,7 @@ void InitUserList()
 	}
 }
 // 用于信息的发送
-void SendInfor(int srcid,char *strinfor,int destid,int type,int count)
-{		
+void SendInfor(int srcid,char *strinfor,int destid,int type,int count) {		
 	if(type == 0)
 	{
 		// 群发	
@@ -468,8 +450,7 @@ void SendInfor(int srcid,char *strinfor,int destid,int type,int count)
 	}
 }
 
-void LoginFunc(char *pData,PacketNode &node,int srcid)
-{
+void LoginFunc(char *pData,PacketNode &node,int srcid) {
 	// 针对用户登录，如果用户登录成功则返回响应码，以及当前的在线用户列表
 	ConnProto retnode;
 	map<int,UserNode>::iterator p1 = g_pOnLineUserMap.find(srcid);
@@ -556,8 +537,7 @@ void LoginFunc(char *pData,PacketNode &node,int srcid)
 	g_pWriteNodes.push(log);
 
 }
-void RegisterFunc(char *pData,PacketNode &node,int srcid)
-{
+void RegisterFunc(char *pData,PacketNode &node,int srcid) {
 	ConnProto retnode;
 	map<int,UserNode>::iterator p1 = g_pOnLineUserMap.find(srcid);
 	map<int,UserNode>::iterator p2 = g_pDisLineUserMap.find(srcid);
@@ -599,8 +579,7 @@ void RegisterFunc(char *pData,PacketNode &node,int srcid)
 			srcid,retnode.type,node.strIP,node.port,node.date);
 	g_pWriteNodes.push(log);
 }
-void PrivateChatFunc(char *pData,PacketNode &node,int srcid)
-{
+void PrivateChatFunc(char *pData,PacketNode &node,int srcid) {
 	// 进行发送数据的格式化
 	ChatContent *pCont = (ChatContent *)pData;
 	ConnProto *pCP = (ConnProto *)node.infor;
@@ -613,8 +592,7 @@ void PrivateChatFunc(char *pData,PacketNode &node,int srcid)
 			srcid,pCP->srcuserid,pCP->type,node.strIP,node.port,node.date,pCont->strContent);
 	g_pWriteNodes.push(log);
 }
-void PublicChatFunc(char *pData,PacketNode &node,int srcid)
-{
+void PublicChatFunc(char *pData,PacketNode &node,int srcid) {
 	// 类似于私聊
 	ChatContent *pCont = (ChatContent *)pData;
 	ConnProto *pCP = (ConnProto *)node.infor;
@@ -626,8 +604,7 @@ void PublicChatFunc(char *pData,PacketNode &node,int srcid)
 			srcid,0,pCP->type,node.strIP,node.port,node.date,pCont->strContent);
 	g_pWriteNodes.push(log);
 }
-void QuitFunc(char *pData,PacketNode &node,int srcid)
-{	
+void QuitFunc(char *pData,PacketNode &node,int srcid) {	
 	map<int,UserNode>::iterator p1 = g_pOnLineUserMap.find(srcid);
 	if(p1 == g_pOnLineUserMap.end())
 	{	
@@ -659,8 +636,7 @@ void QuitFunc(char *pData,PacketNode &node,int srcid)
 	g_pWriteNodes.push(log);
 
 }
-void OtherFunc(char *pData,PacketNode &node,int srcid)
-{
+void OtherFunc(char *pData,PacketNode &node,int srcid) {
 	char log[1024];
 	sprintf(log,"insert into user_log(srcid,type,strip,port,protime) values(%d,%d,'%s',%d,'%s')",
 			srcid,5,node.strIP,node.port,node.date);
